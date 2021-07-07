@@ -1,0 +1,11 @@
+{
+    "prefix" : [
+        "*"
+    ],
+    "owner" : [
+        343280858473693196
+    ],
+    "token" : "YOUR_DISCORD_TOKEN",
+    "passdb" : "YOUR_DATABASE_PASSWORD",
+    "userdb" : "YOUR_DATABASE_USER"
+}
