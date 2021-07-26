@@ -1,8 +1,29 @@
 import discord
 from discord.ext import commands
+
 import datetime
 import asyncio
+import os
 
+from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+import selenium.common.exceptions as exceptions
+
+#form automation
+async def script(content):
+    options = webdriver.ChromeOptions()
+    options.page_load_strategy = 'eager'
+    options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    options.add_argument("--headless")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--no-sandbox")
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
+    driver.get(os.getenv("LINK_GFORM").format(content[1].replace(' ','+'), content[0].replace(' ','+')))
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "freebirdFormviewerViewNavigationNoSubmitButton"))).click()
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "freebirdFormviewerViewNavigationSubmitButton"))).click()
+    driver.quit()
 
 class Absen(commands.Cog):
     def __init__(self, bot):
@@ -35,13 +56,20 @@ class Absen(commands.Cog):
                     reaction, user = await self.bot.wait_for("reaction_add", timeout=20, check=check)
                     if str(reaction.emoji) == "☑️":
                         embed = discord.Embed(
+                            title = 'Processing...',
+                            colour=0x4CE73C
+                        )
+                        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+                        await message.edit(embed=embed)
+                        await message.clear_reactions()
+                        await script([f'{(data[0])[0]}', f'{(data[0])[1]}', f'{time}', f'{p}'])
+                        embed = discord.Embed(
                             title = 'Success',
                             colour=0x4CE73C
                         )
                         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                         embed.set_thumbnail(url="https://i.ibb.co/Q9jNJkp/pngegg-1.png")
                         await message.edit(embed=embed)
-                        await message.clear_reactions()
                         break
                     elif str(reaction.emoji) == "❌":
                         await message.delete()
@@ -77,6 +105,5 @@ class Absen(commands.Cog):
         await ctx.send(embed=embed, delete_after=5)
         await ctx.message.delete(delay=5)
         
-
 def setup(bot):
     bot.add_cog(Absen(bot))

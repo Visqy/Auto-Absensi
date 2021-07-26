@@ -10,13 +10,6 @@ import psycopg2
 import asyncio
 import json
 
-#heroku stuff
-TOKEN = os.getenv("DISCORD_TOKEN")
-USER_DB = os.getenv("USER_DB")
-PASS_DB = os.getenv("PASS_DB")
-DB = os.getenv("DB")
-HOST_DB = os.getenv("HOST_DB")
-
 if not isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
 else:
@@ -41,13 +34,13 @@ async def on_ready():
 
 async def initialize():
     await bot.wait_until_ready()
-    bot.db = psycopg2.connect(host= HOST_DB,
+    bot.db = psycopg2.connect(host= os.getenv("HOST_DB"),
                     port= "5432",
-                    database= DB, 
-                        user = USER_DB, 
-                     password = PASS_DB)
+                    database= os.getenv("DB"), 
+                        user = os.getenv("USER_DB"), 
+                     password = os.getenv("PASS_DB"))
 
 bot.loop.create_task(initialize())
 
-bot.run(TOKEN)
+bot.run(os.getenv("DISCORD_TOKEN"))
 asyncio.run(bot.db.close())
