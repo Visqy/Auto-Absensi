@@ -20,9 +20,13 @@ async def script(content):
     options.add_argument("--disable-dev-shm-usage")
     options.add_argument("--no-sandbox")
     driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
-    driver.get(os.getenv("LINK_GFORM").format(content[1].replace(' ','+'), content[0].replace(' ','+')))
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "freebirdFormviewerViewNavigationNoSubmitButton"))).click()
-    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.CLASS_NAME, "freebirdFormviewerViewNavigationSubmitButton"))).click()
+    date= datetime.datetime.strptime(content[2], '%m/%d/%y %H:%M:%S')
+    days={'Mon':'Senin', 'Tue':'Selasa', 'Wed':'Rabu', 'Thu':'Kamis', 'Fri':'Jumat', 'Sat':'Sabtu'}
+    driver.get(os.getenv("LINK_GFORM").format(content[1].replace(' ','+'),'915106473' if content[1]=='XII IPA 1' else '670905647', content[0].replace(' ','+').replace('^', "'"), content[3], date.strftime('%Y-%m-%d'), days[date.strftime('%a')], date.strftime('%H:%M')))
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div/div[2]/form/div[2]/div/div[3]/div/div/div"))).click()
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div/div[2]/form/div[2]/div/div[3]/div/div/div[2]"))).click()
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div/div[2]/form/div[2]/div/div[3]/div/div/div[2]"))).click()
+    WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "/html/body/div/div[2]/form/div[2]/div/div[3]/div/div/div[2]"))).click()
     driver.quit()
 
 class Absen(commands.Cog):
@@ -31,8 +35,8 @@ class Absen(commands.Cog):
 
     @commands.command()
     @commands.cooldown(rate=1, per=3)
-    async def absen(self, ctx, p='hadir'):
-        prep = ['hadir','izin','sakit']
+    async def absen(self, ctx, p='datang'):
+        prep = ['datang','pulang']
         if p in prep:
             author = ctx.message.author
             cur = self.bot.db.cursor()
@@ -44,7 +48,7 @@ class Absen(commands.Cog):
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
             cur.execute(f"SELECT name,class,discord FROM DAFTARNAMA WHERE discord = '{author.id}'")
             data = cur.fetchall()
-            embed.description = f"Nama : {(data[0])[0]}\nKelas : {(data[0])[1]}\nWaktu : {time.strftime('%A, %d %B %Y %H:%M')}\nPresensi : {p.capitalize()}"
+            embed.description = f'''Nama : {(data[0])[0].replace('^', "'")}\nKelas : {(data[0])[1]}\nWaktu : {time.strftime('%A, %d %B %Y %H:%M')}\nPresensi : {p.capitalize()}'''
             message = await ctx.send(embed=embed)
             #Reaction code
             await message.add_reaction('☑️')
@@ -62,7 +66,7 @@ class Absen(commands.Cog):
                         embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
                         await message.edit(embed=embed)
                         await message.clear_reactions()
-                        await script([f'{(data[0])[0]}', f'{(data[0])[1]}', f'{time}', f'{p}'])
+                        await script([f'{(data[0])[0]}', f'{(data[0])[1]}', f"{time.strftime('%m/%d/%y %H:%M:%S')}", f'{p.capitalize()}'])
                         embed = discord.Embed(
                             title = 'Success',
                             colour=0x4CE73C

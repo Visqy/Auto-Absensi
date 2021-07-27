@@ -31,7 +31,7 @@ class AdminCog(commands.Cog):
             description=''
         )
         for row in rows:
-            embed.description +=f'{row[0]}) {row[1]}    {row[2]}\n'
+            embed.description +=f'''{row[0]}) {row[1].replace('^', "'")}    {row[2]}\n'''
         await ctx.send(embed=embed)
 
     @daftarnama.group()
