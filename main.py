@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
 @bot.event
 async def on_ready():
-    await bot.change_presence(activity=discord.Game(name='Testing', type=1))
+    await bot.change_presence(activity=discord.Game(name='Beta Release', type=1))
     print(f'Started')
 
 async def initialize():
