@@ -46,7 +46,7 @@ class Absen(commands.Cog):
                 colour=0x4C3CE7
             )
             embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-            cur.execute(f"SELECT name,class,discord FROM DAFTARNAMA WHERE discord = '{author.id}'")
+            cur.execute(f"SELECT name,class,discord FROM DN WHERE discord = '{author.id}'")
             data = cur.fetchall()
             embed.description = f'''Nama : {(data[0])[0].replace('^', "'")}\nKelas : {(data[0])[1]}\nWaktu : {time.strftime('%A, %d %B %Y %H:%M')}\nPresensi : {p.capitalize()}'''
             message = await ctx.send(embed=embed)

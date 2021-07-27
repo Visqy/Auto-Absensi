@@ -23,7 +23,7 @@ class AdminCog(commands.Cog):
     @commands.cooldown(rate=1, per=3)
     async def daftarnama(self, ctx):
         cur = self.bot.db.cursor()
-        cur.execute("SELECT id, name, discord  FROM DAFTARNAMA  ORDER BY ID ASC")
+        cur.execute("SELECT id, name, discord  FROM DN  ORDER BY ID ASC")
         rows = cur.fetchall()
         embed = discord.Embed(
             title='Daftar Nama',
@@ -39,9 +39,9 @@ class AdminCog(commands.Cog):
     @commands.cooldown(rate=1, per=3)
     async def update(self, ctx, id, dc):
         cur = self.bot.db.cursor()
-        cur.execute(f"SELECT DISCORD FROM DAFTARNAMA WHERE ID = {int(id)}")
+        cur.execute(f"SELECT DISCORD FROM DN WHERE ID = {int(id)}")
         row = cur.fetchall()
-        cur.execute(f"UPDATE DAFTARNAMA SET DISCORD = '{dc}' WHERE ID = {int(id)}")
+        cur.execute(f"UPDATE DN SET DISCORD = '{dc}' WHERE ID = {int(id)}")
         self.bot.db.commit()
         embed = discord.Embed(
             title='Success',
