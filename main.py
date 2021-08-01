@@ -43,7 +43,7 @@ async def changing_status():
     await bot.wait_until_ready()
     while True:
         x =  datetime(2022, 4, 12) - datetime.now()
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"to UTBK, {x.days} days left"))
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"UTBK, {x.days} days left"))
         await asyncio.sleep(3600)
 
 bot.loop.create_task(initialize())
