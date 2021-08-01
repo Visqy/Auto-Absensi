@@ -9,6 +9,7 @@ import sys, traceback
 import psycopg2
 import asyncio
 import json
+from datetime import datetime
 
 if not isfile("config.json"):
     sys.exit("'config.json' not found! Please add it and try again.")
@@ -39,8 +40,15 @@ async def initialize():
                     database= os.getenv("DB"), 
                         user = os.getenv("USER_DB"), 
                      password = os.getenv("PASS_DB"))
+async def changing_status():
+    await bot.wait_until_ready()
+    while True:
+        x =  datetime(2022, 4, 12) - datetime.now()
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"to UTBK, {x.days} days left"))
+        await asyncio.sleep(3600)
 
 bot.loop.create_task(initialize())
+bot.loop.create_task(changing_status())
 
 bot.run(os.getenv("DISCORD_TOKEN"))
 asyncio.run(bot.db.close())
