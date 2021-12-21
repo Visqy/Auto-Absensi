@@ -42,7 +42,7 @@ async def initialize():
 async def changing_status():
     await bot.wait_until_ready()
     while True:
-        x =  datetime(2022, 4, 12) - datetime.now()
+        x =  datetime(2022, 5, 17) - datetime.now()
         await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"UTBK, {x.days} days left"))
         await asyncio.sleep(3600)
 
